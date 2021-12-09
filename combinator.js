@@ -100,7 +100,8 @@ choses = [
     "le réseau",
     "les réseaux".plur(),
     "le réseau",
-    "l'ésthétique relationnelle".fem(),
+    "l'esthétique",
+    "l'esthétique relationnelle".fem(),
     "le capital relationnel",
     "le capital"
 ]
