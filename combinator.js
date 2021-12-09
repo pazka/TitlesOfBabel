@@ -39,8 +39,6 @@ String.prototype.setVars = function (fem, plur, femPlur) {
     return this
 }
 
-String.prototype.isPluriel = false
-String.prototype.isFeminin = false
 
 Array.prototype.getRdmElem = function (force = false) {
     res = this[Math.floor(Math.random() * this.length)]
