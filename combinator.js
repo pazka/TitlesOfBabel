@@ -31,10 +31,10 @@ String.prototype.getVars = function (fem,plur){
     return this
 }
 
-String.prototype.setVars = function (varFem,varPlur,varFemPlur){
-    this.varFem = varFem
-    this.varPlur = varPlur
-    this.varFemPlur = varFemPlur
+String.prototype.setVars = function (fem,plur,femPlur){
+    this.varFem = fem
+    this.varPlur = plur
+    this.varFemPlur = femPlur
 
     return this
 }
@@ -111,12 +111,12 @@ chose_coor = [
 
 adjectifs = [
     "",
-    "relationnel".setVars("relationnel","relationnels","relationnelles"),
-    "complexe".setVars("complexe","complexes","complexes"),
-    "abstrait".setVars("abstrait","abstraits","abstraites"),
-    "informationnel".setVars("informationnelle","informationnels","informationnelles"),
-    "numérique".setVars("numérique","numériques","numériques"),
-    "mathématique".setVars("mathématique","mathématiques","mathématiques")
+    "relationnel".setVars(fem = "relationnelle",plur = "relationnels",femPlur = "relationnelles"),
+    "complexe".setVars(plur = "complexes",femPlur = "complexes"),
+    "abstrait".setVars(fem = "abstraite",plur = "abstraits",femPlur = "abstraites"),
+    "informationnel".setVars(fem = "informationnelle",plur = "informationnels",femPlur = "informationnelles"),
+    "numérique".setVars(plur = "numériques",femPlur = "numériques"),
+    "mathématique".setVars(plur = "mathématiques",femPlur = "mathématiques")
 ]
 
 coordination = [
@@ -151,10 +151,10 @@ function getTemplate(verbe, chose, chose_outil, adjectif, adjectif1, coordchose,
             )
             if (adjectif1 != "" && adjectif != adjectif1) {
                 templates.push(
-                    `${verbe} ${chose} ${coordchose} ${chose_outil}  ${adjectif.getVars(chose_outil.isFem,chose.isPlur)} ${adjectif1.getVars(chose_outil.isFem,chose.isPlur)} `,
-                    `${verbe} ${chose} ${coordchose} ${chose_outil}  ${adjectif.getVars(chose_outil.isFem,chose.isPlur)} ${coord} ${adjectif1.getVars(chose_outil.isFem,chose.isPlur)} `,
+                    `${verbe} ${chose} ${coordchose} ${chose_outil} ${adjectif.getVars(chose_outil.isFem,chose.isPlur)} ${adjectif1.getVars(chose_outil.isFem,chose_outil.isPlur)} `,
+                    `${verbe} ${chose} ${coordchose} ${chose_outil} ${adjectif.getVars(chose_outil.isFem,chose.isPlur)} ${coord} ${adjectif1.getVars(chose_outil.isFem,chose_outil.isPlur)} `,
                     `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)} ${adjectif1.getVars(chose.isFem,chose.isPlur)} ${coordchose} ${chose_outil}`,
-                    `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)} ${coordchose} ${chose_outil} ${adjectif1.getVars(chose_outil.isFem,chose.isPlur)} `,
+                    `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)} ${coordchose} ${chose_outil} ${adjectif1.getVars(chose_outil.isFem,chose_outil.isPlur)} `,
                     `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)} ${coord} ${adjectif1.getVars(chose.isFem,chose.isPlur)} ${coordchose} ${chose_outil}`
                 )
             }
