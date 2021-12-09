@@ -71,13 +71,13 @@ verbes = [
 ]
 choses = [
     "",
-    "la mesure",
+    "la mesure".fem(),
     "le symbole",
     "les données".plur(),
     "la donnée",
     "l'élément",
     "les éléments".plur(),
-    "l'information",
+    "l'information".fem(),
     "le modèle",
     "le point",
     "le tissu",
