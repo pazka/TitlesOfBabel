@@ -29,22 +29,24 @@ function add_node(phrase, special_css) {
     await browseAllPossibilities((phrase) => {
         nb_combination_found++
     })
-    add_node(`${new Intl.NumberFormat().format(nb_combination_found)} combination compiled... Have fun :) `)
+    add_node(`${new Intl.NumberFormat().format(nb_combination_found)} combinations compiled... Have fun :) `)
 
+    console.log(`obselete : ${obselete_getNbElements()} element present originaly`)
     special_index = 50
 
 
     animation = setInterval(() => {
         add_node(generateNewPhrase(), i++ % special_index == 0)
-    }, 2000)
+    }, 600)
 })()
 
 function precise(x) {
     return Number.parseFloat(x).toPrecision(4);
 }
+
 var slider = document.getElementById("myRange");
 slider.oninput = function () {
-    document.getElementById("spawntime").innerText = `a new title every ${precise(this.value / 1000, 2)} second`
+    document.getElementById("spawntime").innerText = `a new title every ${precise(this.value / 1000, 2)} seconds`
     clearTimeout(animation)
     animation = setInterval(() => {
         add_node(generateNewPhrase(), i++ % special_index == 0)

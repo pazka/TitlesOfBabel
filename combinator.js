@@ -1,4 +1,56 @@
 
+
+String.prototype.h = function () {
+    var hash = 0, i, chr;
+    if (this.length === 0) return hash;
+    for (i = 0; i < this.length; i++) {
+        chr = this.charCodeAt(i);
+        hash = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+    }
+    return hash;
+}
+
+
+String.prototype.plur = function (){
+    this.isPlur = true
+    return this
+}
+String.prototype.fem = function (){
+    this.isFem = true
+    return this
+}
+String.prototype.getVars = function (fem,plur){
+    if(plur && fem)
+        return this.varFemPlur ?? this
+    if(fem)
+        return this.varFem ?? this
+    if(plur)
+        return this.varPlur ?? this
+
+    return this
+}
+
+String.prototype.setVars = function (varFem,varPlur,varFemPlur){
+    this.varFem = varFem
+    this.varPlur = varPlur
+    this.varFemPlur = varFemPlur
+
+    return this
+}
+
+String.prototype.isPluriel = false
+String.prototype.isFeminin = false
+
+Array.prototype.getRdmElem = function (force= false) {
+    res = this[Math.floor(Math.random() * this.length)]
+    while(force && res == "")
+        res = this[Math.floor(Math.random() * this.length)]
+
+    return res
+}
+
+
 verbes = [
     "Tricoter",
     "Détricoter",
@@ -18,36 +70,37 @@ verbes = [
     "Visualiser"
 ]
 choses = [
+    "",
     "la mesure",
     "le symbole",
-    "les données",
+    "les données".plur(),
     "la donnée",
     "l'élément",
-    "les éléments",
+    "les éléments".plur(),
     "l'information",
     "le modèle",
     "le point",
     "le tissu",
-    "les flux",
+    "les flux".plur(),
     "le flux",
-    "la relation",
+    "la relation".fem(),
     "le relationnel",
     "le fil",
     "le code",
     "le patterne",
-    "les patternes",
-    "les dimensions ",
+    "les patternes".plur(),
+    "les dimensions".plur(),
     "la dimension",
-    "la data",
-    "les réalités",
+    "la data".fem(),
+    "les réalités".plur(),
     "le réel",
     "le numérique",
     "l'art",
     "le graphe",
     "le réseau",
-    "les réseaux",
+    "les réseaux".plur(),
     "le réseau",
-    "l'ésthétique relationnelle",
+    "l'ésthétique relationnelle".fem(),
     "le capital relationnel"
 ]
 
@@ -58,12 +111,12 @@ chose_coor = [
 
 adjectifs = [
     "",
-    "relationnel",
-    "complexe",
-    "abstraite",
-    "informationnel",
-    "numérique",
-    "mathématique"
+    "relationnel".setVars("relationnel","relationnels","relationnelles"),
+    "complexe".setVars("complexe","complexes","complexes"),
+    "abstrait".setVars("abstrait","abstraits","abstraites"),
+    "informationnel".setVars("informationnelle","informationnels","informationnelles"),
+    "numérique".setVars("numérique","numériques","numériques"),
+    "mathématique".setVars("mathématique","mathématiques","mathématiques")
 ]
 
 coordination = [
@@ -71,42 +124,68 @@ coordination = [
     "et"
 ]
 
+function getTemplate(verbe, chose, chose_outil, adjectif, adjectif1, coordchose, coord) {
+    templates = []
 
-function generateNewPhrase() {
-    verbe = verbes.getRdmElem()
-    chose = choses.getRdmElem()
-    chose_outil = choses.getRdmElem()
-    adjectif = adjectifs.getRdmElem()
-    adjectif1 = adjectifs.getRdmElem()
-    coordchose = chose_coor.getRdmElem()
-    coord = coordination.getRdmElem()
+    if(chose == "")
+        return []
 
-    templates = [
-        `${verbe} ${chose} ${coordchose} ${chose_outil}`,
-        `${verbe} ${chose} ${adjectif} ${coordchose} ${chose_outil}`,
-        `${verbe} ${chose} ${adjectif} ${adjectif1} ${coordchose} ${chose_outil}`,
-        `${verbe} ${chose} ${adjectif} ${coordchose} ${chose_outil} ${adjectif1} `,
-        `${verbe} ${chose} ${coordchose} ${chose_outil}  ${adjectif} ${adjectif1} `,
-        `${verbe} ${chose} ${adjectif} ${coord} ${adjectif1} ${coordchose} ${chose_outil}`,
-        `${verbe} ${chose} ${coordchose} ${chose_outil}  ${adjectif} ${coord} ${adjectif1} `,
-        `${verbe} ${chose} ${adjectif} ${adjectif1}`,
-        `${verbe} ${chose} ${adjectif} ${coord} ${adjectif1} `,
-    ]
+    if (adjectif == "") {
+        templates.push(
+            `${verbe} ${chose}`,
+        )
+
+        if (chose_outil != "" && chose != chose_outil) {
+            templates.push(
+                `${verbe} ${chose} ${coordchose} ${chose_outil}`,
+            )
+        }
+    } else {
+        templates.push(
+            `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)}`,
+        )
+
+        if (chose_outil != "" && chose != chose_outil) {
+            templates.push(
+                `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)} ${coordchose} ${chose_outil}`,
+            )
+            if (adjectif1 != "" && adjectif != adjectif1) {
+                templates.push(
+                    `${verbe} ${chose} ${coordchose} ${chose_outil}  ${adjectif.getVars(chose_outil.isFem,chose.isPlur)} ${adjectif1.getVars(chose_outil.isFem,chose.isPlur)} `,
+                    `${verbe} ${chose} ${coordchose} ${chose_outil}  ${adjectif.getVars(chose_outil.isFem,chose.isPlur)} ${coord} ${adjectif1.getVars(chose_outil.isFem,chose.isPlur)} `,
+                    `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)} ${adjectif1.getVars(chose.isFem,chose.isPlur)} ${coordchose} ${chose_outil}`,
+                    `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)} ${coordchose} ${chose_outil} ${adjectif1.getVars(chose_outil.isFem,chose.isPlur)} `,
+                    `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)} ${coord} ${adjectif1.getVars(chose.isFem,chose.isPlur)} ${coordchose} ${chose_outil}`
+                )
+            }
+        }
+
+        if (adjectif1 != "" && adjectif != adjectif1) {
+            templates.push(
+                `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)} ${adjectif1.getVars(chose.isFem,chose.isPlur)}`,
+                `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)} ${coord} ${adjectif1.getVars(chose.isFem,chose.isPlur)} `,
+            )
+        }
+    }
+    return templates
+}
+
+
+function generateNewPhrase(verbe, chose, chose_outil, adjectif, adjectif1, coordchose, coord) {
+    verbe = verbe ?? verbes.getRdmElem()
+    chose = chose ?? choses.getRdmElem(force=true)
+    chose_outil = chose_outil ?? choses.getRdmElem()
+    adjectif = adjectif ?? adjectifs.getRdmElem()
+    adjectif1 = adjectif1 ?? adjectifs.getRdmElem()
+    coordchose = coordchose ?? chose_coor.getRdmElem()
+    coord = coord ?? coordination.getRdmElem()
+
+    templates = getTemplate(verbe, chose, chose_outil, adjectif, adjectif1, coordchose, coord)
 
     //Don't care about repeating ourselves
     selected_phrase = templates.getRdmElem()
 
     return selected_phrase
-}
-
-function obselete_getNbElements(xv = 1, xc = 1, xcc = 1, xa = 1, xco = 1) {
-    v = verbes.length * xv
-    c = choses.length * xc
-    cc = chose_coor.length * xcc
-    a = adjectifs.length * xa
-    co = coordination.length * xco
-
-    return v * c * (cc * c + a * ((cc * c) + (a - 1) * (cc * c * (2 * co + 3) + 1 + co)))
 }
 
 function browseAllPossibilities(cb) {
@@ -122,17 +201,7 @@ function browseAllPossibilities(cb) {
                                 return
                             coordination.forEach(coord => {
                                 chose_coor.forEach(coordchose => {
-                                    templates = [
-                                        `${verbe} ${chose} ${coordchose} ${chose_outil}`,
-                                        `${verbe} ${chose} ${adjectif} ${coordchose} ${chose_outil}`,
-                                        `${verbe} ${chose} ${adjectif} ${adjectif1} ${coordchose} ${chose_outil}`,
-                                        `${verbe} ${chose} ${adjectif} ${coordchose} ${chose_outil} ${adjectif1} `,
-                                        `${verbe} ${chose} ${coordchose} ${chose_outil}  ${adjectif} ${adjectif1} `,
-                                        `${verbe} ${chose} ${adjectif} ${coord} ${adjectif1} ${coordchose} ${chose_outil}`,
-                                        `${verbe} ${chose} ${coordchose} ${chose_outil}  ${adjectif} ${coord} ${adjectif1} `,
-                                        `${verbe} ${chose} ${adjectif} ${adjectif1}`,
-                                        `${verbe} ${chose} ${adjectif} ${coord} ${adjectif1} `,
-                                    ]
+                                    templates = getTemplate(verbe, chose, chose_outil, adjectif, adjectif1, coordchose, coord)
                                     templates.forEach(p => cb(p))
                                 })
                             })
@@ -145,32 +214,42 @@ function browseAllPossibilities(cb) {
     })
 }
 
+function obselete_getNbElements(xv = 1, xc = 1, xcc = 1, xa = 1, xco = 1) {
+    v = verbes.length * xv
+    c = choses.length * xc
+    cc = chose_coor.length * xcc
+    a = adjectifs.length * xa
+    co = coordination.length * xco
+
+    return v * c * (cc * c + a * ((cc * c) + (a - 1) * (cc * c * (2 * co + 3) + 1 + co)))
+}
+
 function obselete_browseAllPossibilities(cb) {
-    return new Promise(resolve=>{
+    return new Promise(resolve => {
         verbes.forEach(verbe => {
             choses.forEach(chose => {
-    
+
                 chose_coor.forEach(coordchose => {
-    
+
                     choses.forEach(chose_outil => {
                         cb(`${verbe} ${chose} ${coordchose} ${chose_outil}`)
                     })
                 })
                 adjectifs.forEach(adjectif => {
-    
+
                     chose_coor.forEach(coordchose => {
-    
+
                         choses.forEach(chose_outil => {
                             cb(`${verbe} ${chose} ${adjectif} ${coordchose} ${chose_outil}`)
                         })
                     })
-    
+
                     adjectifs.forEach(adjectif1 => {
                         if (adjectif == adjectif1)
                             return
-    
+
                         chose_coor.forEach(coordchose => {
-    
+
                             choses.forEach(chose_outil => {
                                 cb(`${verbe} ${chose} ${adjectif} ${adjectif1} ${coordchose} ${chose_outil}`)
                                 cb(`${verbe} ${chose} ${adjectif} ${coordchose} ${chose_outil} ${adjectif1} `)
@@ -184,7 +263,7 @@ function obselete_browseAllPossibilities(cb) {
                                 })
                             })
                         })
-    
+
                         cb(`${verbe} ${chose} ${adjectif} ${adjectif1}`)
                         coordination.forEach(coord => {
                             cb(`${verbe} ${chose} ${adjectif} ${coord} ${adjectif1} `)
@@ -196,19 +275,4 @@ function obselete_browseAllPossibilities(cb) {
 
         resolve()
     })
-}
-
-String.prototype.h = function () {
-    var hash = 0, i, chr;
-    if (this.length === 0) return hash;
-    for (i = 0; i < this.length; i++) {
-        chr = this.charCodeAt(i);
-        hash = ((hash << 5) - hash) + chr;
-        hash |= 0; // Convert to 32bit integer
-    }
-    return hash;
-};
-
-Array.prototype.getRdmElem = function () {
-    return this[Math.floor(Math.random() * this.length)]
 }
