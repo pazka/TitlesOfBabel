@@ -151,8 +151,8 @@ function getTemplate(verbe, chose, chose_outil, adjectif, adjectif1, coordchose,
             )
             if (adjectif1 != "" && adjectif != adjectif1) {
                 templates.push(
-                    `${verbe} ${chose} ${coordchose} ${chose_outil} ${adjectif.getVars(chose_outil.isFem,chose.isPlur)} ${adjectif1.getVars(chose_outil.isFem,chose_outil.isPlur)} `,
-                    `${verbe} ${chose} ${coordchose} ${chose_outil} ${adjectif.getVars(chose_outil.isFem,chose.isPlur)} ${coord} ${adjectif1.getVars(chose_outil.isFem,chose_outil.isPlur)} `,
+                    `${verbe} ${chose} ${coordchose} ${chose_outil} ${adjectif.getVars(chose_outil.isFem,chose_outil.isPlur)} ${adjectif1.getVars(chose_outil.isFem,chose_outil.isPlur)} `,
+                    `${verbe} ${chose} ${coordchose} ${chose_outil} ${adjectif.getVars(chose_outil.isFem,chose_outil.isPlur)} ${coord} ${adjectif1.getVars(chose_outil.isFem,chose_outil.isPlur)} `,
                     `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)} ${adjectif1.getVars(chose.isFem,chose.isPlur)} ${coordchose} ${chose_outil}`,
                     `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)} ${coordchose} ${chose_outil} ${adjectif1.getVars(chose_outil.isFem,chose_outil.isPlur)} `,
                     `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)} ${coord} ${adjectif1.getVars(chose.isFem,chose.isPlur)} ${coordchose} ${chose_outil}`
