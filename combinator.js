@@ -12,26 +12,26 @@ String.prototype.h = function () {
 }
 
 
-String.prototype.plur = function (){
+String.prototype.plur = function () {
     this.isPlur = true
     return this
 }
-String.prototype.fem = function (){
+String.prototype.fem = function () {
     this.isFem = true
     return this
 }
-String.prototype.getVars = function (fem,plur){
-    if(plur && fem)
+String.prototype.getVars = function (fem, plur) {
+    if (plur && fem)
         return this.varFemPlur ?? this
-    if(fem)
+    if (fem)
         return this.varFem ?? this
-    if(plur)
+    if (plur)
         return this.varPlur ?? this
 
     return this
 }
 
-String.prototype.setVars = function (fem,plur,femPlur){
+String.prototype.setVars = function (fem, plur, femPlur) {
     this.varFem = fem
     this.varPlur = plur
     this.varFemPlur = femPlur
@@ -42,9 +42,9 @@ String.prototype.setVars = function (fem,plur,femPlur){
 String.prototype.isPluriel = false
 String.prototype.isFeminin = false
 
-Array.prototype.getRdmElem = function (force= false) {
+Array.prototype.getRdmElem = function (force = false) {
     res = this[Math.floor(Math.random() * this.length)]
-    while(force && res == "")
+    while (force && res == "")
         res = this[Math.floor(Math.random() * this.length)]
 
     return res
@@ -73,7 +73,7 @@ choses = [
     "",
     "la mesure".fem(),
     "le symbole",
-    "les données".plur(),
+    "les données".fem().plur(),
     "la donnée",
     "l'élément",
     "les éléments".plur(),
@@ -89,10 +89,10 @@ choses = [
     "le code",
     "le patterne",
     "les patternes".plur(),
-    "les dimensions".plur(),
+    "les dimensions".fem().plur(),
     "la dimension",
     "la data".fem(),
-    "les réalités".plur(),
+    "les réalités".fem().plur(),
     "le réel",
     "le numérique",
     "l'art",
@@ -101,7 +101,8 @@ choses = [
     "les réseaux".plur(),
     "le réseau",
     "l'ésthétique relationnelle".fem(),
-    "le capital relationnel"
+    "le capital relationnel",
+    "le capital"
 ]
 
 chose_coor = [
@@ -111,12 +112,12 @@ chose_coor = [
 
 adjectifs = [
     "",
-    "relationnel".setVars(fem = "relationnelle",plur = "relationnels",femPlur = "relationnelles"),
-    "complexe".setVars(plur = "complexes",femPlur = "complexes"),
-    "abstrait".setVars(fem = "abstraite",plur = "abstraits",femPlur = "abstraites"),
-    "informationnel".setVars(fem = "informationnelle",plur = "informationnels",femPlur = "informationnelles"),
-    "numérique".setVars(plur = "numériques",femPlur = "numériques"),
-    "mathématique".setVars(plur = "mathématiques",femPlur = "mathématiques")
+    "relationnel".setVars("relationnelle", "relationnels", "relationnelles"),
+    "complexe".setVars("complexe", "complexes", "complexes"),
+    "abstrait".setVars("abstraite", "abstraits", "abstraites"),
+    "informationnel".setVars("informationnelle", "informationnels", "informationnelles"),
+    "numérique".setVars("numérique", "numériques", "numériques"),
+    "mathématique".setVars("mathématique", "mathématiques", "mathématiques")
 ]
 
 coordination = [
@@ -127,7 +128,7 @@ coordination = [
 function getTemplate(verbe, chose, chose_outil, adjectif, adjectif1, coordchose, coord) {
     templates = []
 
-    if(chose == "")
+    if (chose == "")
         return []
 
     if (adjectif == "") {
@@ -142,28 +143,28 @@ function getTemplate(verbe, chose, chose_outil, adjectif, adjectif1, coordchose,
         }
     } else {
         templates.push(
-            `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)}`,
+            `${verbe} ${chose} ${adjectif.getVars(chose.isFem, chose.isPlur)}`,
         )
 
         if (chose_outil != "" && chose != chose_outil) {
             templates.push(
-                `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)} ${coordchose} ${chose_outil}`,
+                `${verbe} ${chose} ${adjectif.getVars(chose.isFem, chose.isPlur)} ${coordchose} ${chose_outil}`,
             )
             if (adjectif1 != "" && adjectif != adjectif1) {
                 templates.push(
-                    `${verbe} ${chose} ${coordchose} ${chose_outil} ${adjectif.getVars(chose_outil.isFem,chose_outil.isPlur)} ${adjectif1.getVars(chose_outil.isFem,chose_outil.isPlur)} `,
-                    `${verbe} ${chose} ${coordchose} ${chose_outil} ${adjectif.getVars(chose_outil.isFem,chose_outil.isPlur)} ${coord} ${adjectif1.getVars(chose_outil.isFem,chose_outil.isPlur)} `,
-                    `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)} ${adjectif1.getVars(chose.isFem,chose.isPlur)} ${coordchose} ${chose_outil}`,
-                    `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)} ${coordchose} ${chose_outil} ${adjectif1.getVars(chose_outil.isFem,chose_outil.isPlur)} `,
-                    `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)} ${coord} ${adjectif1.getVars(chose.isFem,chose.isPlur)} ${coordchose} ${chose_outil}`
+                    `${verbe} ${chose} ${coordchose} ${chose_outil} ${adjectif.getVars(chose_outil.isFem, chose_outil.isPlur)} ${adjectif1.getVars(chose_outil.isFem, chose_outil.isPlur)} `,
+                    `${verbe} ${chose} ${coordchose} ${chose_outil} ${adjectif.getVars(chose_outil.isFem, chose_outil.isPlur)} ${coord} ${adjectif1.getVars(chose_outil.isFem, chose_outil.isPlur)} `,
+                    `${verbe} ${chose} ${adjectif.getVars(chose.isFem, chose.isPlur)} ${adjectif1.getVars(chose.isFem, chose.isPlur)} ${coordchose} ${chose_outil}`,
+                    `${verbe} ${chose} ${adjectif.getVars(chose.isFem, chose.isPlur)} ${coordchose} ${chose_outil} ${adjectif1.getVars(chose_outil.isFem, chose_outil.isPlur)} `,
+                    `${verbe} ${chose} ${adjectif.getVars(chose.isFem, chose.isPlur)} ${coord} ${adjectif1.getVars(chose.isFem, chose.isPlur)} ${coordchose} ${chose_outil}`
                 )
             }
         }
 
         if (adjectif1 != "" && adjectif != adjectif1) {
             templates.push(
-                `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)} ${adjectif1.getVars(chose.isFem,chose.isPlur)}`,
-                `${verbe} ${chose} ${adjectif.getVars(chose.isFem,chose.isPlur)} ${coord} ${adjectif1.getVars(chose.isFem,chose.isPlur)} `,
+                `${verbe} ${chose} ${adjectif.getVars(chose.isFem, chose.isPlur)} ${adjectif1.getVars(chose.isFem, chose.isPlur)}`,
+                `${verbe} ${chose} ${adjectif.getVars(chose.isFem, chose.isPlur)} ${coord} ${adjectif1.getVars(chose.isFem, chose.isPlur)} `,
             )
         }
     }
@@ -173,7 +174,7 @@ function getTemplate(verbe, chose, chose_outil, adjectif, adjectif1, coordchose,
 
 function generateNewPhrase(verbe, chose, chose_outil, adjectif, adjectif1, coordchose, coord) {
     verbe = verbe ?? verbes.getRdmElem()
-    chose = chose ?? choses.getRdmElem(force=true)
+    chose = chose ?? choses.getRdmElem(force = true)
     chose_outil = chose_outil ?? choses.getRdmElem()
     adjectif = adjectif ?? adjectifs.getRdmElem()
     adjectif1 = adjectif1 ?? adjectifs.getRdmElem()
