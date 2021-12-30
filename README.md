@@ -9,6 +9,8 @@ Watch the twitter bot posting stupid jobs here : [@TafRandom](https://twitter.co
 
 # Secondary objective
 
-What to deploy  a full serverless code on AWS with Lambda expression with EventBridge Trigger and Twitter API + Authentication
+Deploy a full serverless code on AWS with *Lambda* and *EventBridge Trigger*. 
+Also discover Twitter API + its authentication process
+
 All that to create a bot
 
