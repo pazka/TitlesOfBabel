@@ -23,12 +23,12 @@ String.prototype.fem = function () {
     this.isFem = true
     return this
 }
-String.prototype.getVars = function (fem, plur) {
-    if (plur && fem)
+String.prototype.getVars = function (obj) {
+    if (obj.isPlur && obj.isFem)
         return this.varFemPlur ?? this
-    if (fem)
+    if (obj.isFem)
         return this.varFem ?? this
-    if (plur)
+    if (obj.isPlur)
         return this.varPlur ?? this
 
     return this
@@ -50,14 +50,14 @@ String.prototype.pas = function(){
     if(this.passif)
         return this.passif 
     
-    str = this.replaceAt(0,"l")
+    let str = this.replaceAt(0,"l")
 
     return str
 }
 
 
 Array.prototype.getRdmElem = function (force = false) {
-    res = this[Math.floor(Math.random() * this.length)]
+    let res = this[Math.floor(Math.random() * this.length)]
     while (force && res == "")
         res = this[Math.floor(Math.random() * this.length)]
 
@@ -65,35 +65,37 @@ Array.prototype.getRdmElem = function (force = false) {
 }
 
 
-verbes = [
+let verbes = [
     "Bricoleur",
-    "Travailleur",
-    "Collectioneur",
-    "Fabriquant",
-    "Marchant",
-    "Réparateur",
-    "Négociateur",
+    "Travail",
+    "Collectionneur",
+    "Fabrication",
+    "Marchand",
+    "Réparation",
+    "Préparation",
+    "Négociation",
     "Valorisation",
     "Créateur",
     "Revendeur",
     "Administrateur",
-    "Gestionnaire"
+    "Gestion",
+    "Developpeur",
+    "Organisation"
 ]
-choses = [
-    "d'industrie".fem(),
-    "de software",
-    "de bitcoin (cryptomonnaie)".setPas("la crypto".fem()),
-    "de temps",
+let choses = [
+    "d'industrie".fem().setPas("l'industrie".fem()),
+    "de #software",
+    "de #bitcoin (cryptomonnaie)".setPas("la #crypto".fem()),
+    "de #temps",
     "de ressources".fem().plur().setPas("les ressources".fem().plur()),
     "de ressource".fem().setPas("la ressource".fem()),
-    "de valeur".fem().setPas("la valeur".fem()),
-    "de signification".fem().setPas("la signification".fem()),
+    "de #valeur".fem().setPas("la #valeur".fem()),
     "d'évènements".plur().setPas("l'évènementiel"),
     "de papier",
-    "d'argent",
-    "de végéteaux".setPas("le végétal"),
-    "de code",
-    "d'art",
+    "d'#argent",
+    "de végétaux".plur().setPas("le #végétal"),
+    "de #code",
+    "d'#art",
     "de sourires".plur().setPas("les sourires"),
     "d'enfant".setPas("l'enfant"),
     "d'enfants".plur().setPas("les enfants"),
@@ -101,39 +103,60 @@ choses = [
     "de personne".fem().setPas("la personne".fem()),
     "de rien",
     "de vent",
-    "de vie".fem().setPas("la vie".fem()),
-    "de conscience".fem(),
-    "de bien-être"
+    "de film",
+    "de commerce",
+    "de #vie".fem().setPas("la #vie".fem()),
+    "de #conscience".fem().setPas("la #conscience".fem()),
+    "de #confiance".fem().setPas("la #confiance".fem()),
+    "de bien-être",
+    "de eCommerce",
+    "de eAgriculture".fem(),
+    "de nouvelles méthodes".fem().plur().setPas("les nouvelles méthodes".plur().fem()),
+    "de chimie".fem().setPas("la chimie".fem()),
+    "d'#amour",
+    "de #jeux".plur(),
+    "d'énergie".fem(),
+    "de #voyage",
+    "de développement"
 ]
 
-chose_coor = [
+let chose_coor = [
     "par",
     "pour"
 ]
 
-adjectifs = [
+let adjectifs = [
     "",
     "bovin".setVars("bovine", "bovins", "bovines"),
+    "#vegan".setVars("vegan", "vegans", "vegans"),
+    "animal".setVars("animale", "animals", "animales"),
     "relationnel".setVars("relationnelle", "relationnels", "relationnelles"),
     "complexe".setVars("complexe", "complexes", "complexes"),
     "abstrait".setVars("abstraite", "abstraits", "abstraites"),
-    "informationnel".setVars("informationnelle", "informationnels", "informationnelles"),
-    "numérique".setVars("numérique", "numériques", "numériques"),
-    "mathématique".setVars("mathématique", "mathématiques", "mathématiques"),
-    "humain".setVars("humaine", "humains", "humaines"),
+    "#numérique".setVars("numérique", "numériques", "numériques"),
+    "vidéo".setVars("vidéo", "vidéos", "vidéos"),
+    "#humain".setVars("humaine", "humains", "humaines"),
     "monnétaire".setVars("monnétaire", "monnétaires", "monnétaires"),
     "spirituel".setVars("spirituelle", "spirituels", "spirituelles"),
     "avancé".setVars("avancée", "avancés", "avancées"),
-    "virtuel".setVars("virtuelle", "virtuels", "virtuelles")
+    "#virtuel".setVars("virtuelle", "virtuels", "virtuelles"),
+    "chimique".setVars("chimique", "chimiques", "chimiques"),
+    "douteux".setVars("douteuse", "douteux", "douteuses"),
+    "rural".setVars("rurale", "ruraux", "rurales"),
+    "urbain".setVars("urbaine", "urbains", "urbaines"),
+    "optimiste".setVars("optimiste", "optimistes", "optimistes"),
+    "vert".setVars("verte", "verts", "vertes"),
+    "#bio".setVars("bio", "bios", "bios"),
+    "organique".setVars("organique", "organiques", "organiques"),
 ]
 
-coordination = [
+let coordination = [
     "ou",
     "et"
 ]
 
 function getTemplate(verbe, chose, chose_outil, adjectif, adjectif1, coordchose, coord) {
-    templates = []
+    let templates = []
 
     if (chose == "")
         return []
@@ -150,28 +173,28 @@ function getTemplate(verbe, chose, chose_outil, adjectif, adjectif1, coordchose,
         }
     } else {
         templates.push(
-            `${verbe} ${chose} ${adjectif.getVars(chose.isFem, chose.isPlur)}`,
+            `${verbe} ${chose} ${adjectif.getVars(chose)}`,
         )
 
         if (chose_outil != "" && chose != chose_outil) {
             templates.push(
-                `${verbe} ${chose} ${adjectif.getVars(chose.isFem, chose.isPlur)} ${coordchose} ${chose_outil}`,
+                `${verbe} ${chose} ${adjectif.getVars(chose)} ${coordchose} ${chose_outil}`,
             )
             if (adjectif1 != "" && adjectif != adjectif1) {
                 templates.push(
-                    `${verbe} ${chose} ${coordchose} ${chose_outil} ${adjectif.getVars(chose_outil.isFem, chose_outil.isPlur)} ${adjectif1.getVars(chose_outil.isFem, chose_outil.isPlur)} `,
-                    `${verbe} ${chose} ${coordchose} ${chose_outil} ${adjectif.getVars(chose_outil.isFem, chose_outil.isPlur)} ${coord} ${adjectif1.getVars(chose_outil.isFem, chose_outil.isPlur)} `,
-                    `${verbe} ${chose} ${adjectif.getVars(chose.isFem, chose.isPlur)} ${adjectif1.getVars(chose.isFem, chose.isPlur)} ${coordchose} ${chose_outil}`,
-                    `${verbe} ${chose} ${adjectif.getVars(chose.isFem, chose.isPlur)} ${coordchose} ${chose_outil} ${adjectif1.getVars(chose_outil.isFem, chose_outil.isPlur)} `,
-                    `${verbe} ${chose} ${adjectif.getVars(chose.isFem, chose.isPlur)} ${coord} ${adjectif1.getVars(chose.isFem, chose.isPlur)} ${coordchose} ${chose_outil}`
+                    `${verbe} ${chose} ${coordchose} ${chose_outil} ${adjectif.getVars(chose_outil)} ${adjectif1.getVars(chose_outil)} `,
+                    `${verbe} ${chose} ${coordchose} ${chose_outil} ${adjectif.getVars(chose_outil)} ${coord} ${adjectif1.getVars(chose_outil)} `,
+                    `${verbe} ${chose} ${adjectif.getVars(chose)} ${adjectif1.getVars(chose)} ${coordchose} ${chose_outil}`,
+                    `${verbe} ${chose} ${adjectif.getVars(chose)} ${coordchose} ${chose_outil} ${adjectif1.getVars(chose_outil)} `,
+                    `${verbe} ${chose} ${adjectif.getVars(chose)} ${coord} ${adjectif1.getVars(chose)} ${coordchose} ${chose_outil}`
                 )
             }
         }
 
         if (adjectif1 != "" && adjectif != adjectif1) {
             templates.push(
-                `${verbe} ${chose} ${adjectif.getVars(chose.isFem, chose.isPlur)} ${adjectif1.getVars(chose.isFem, chose.isPlur)}`,
-                `${verbe} ${chose} ${adjectif.getVars(chose.isFem, chose.isPlur)} ${coord} ${adjectif1.getVars(chose.isFem, chose.isPlur)} `,
+                `${verbe} ${chose} ${adjectif.getVars(chose)} ${adjectif1.getVars(chose)}`,
+                `${verbe} ${chose} ${adjectif.getVars(chose)} ${coord} ${adjectif1.getVars(chose)} `,
             )
         }
     }
@@ -196,91 +219,13 @@ function generateNewPhrase(verbe, chose, chose_outil, adjectif, adjectif1, coord
     return selected_phrase
 }
 
-function browseAllPossibilities(cb) {
-    return new Promise(resolve => {
-        verbes.forEach(verbe => {
-            choses.forEach(chose => {
-                choses.forEach(chose_outil => {
-                    if (chose_outil == chose)
-                        return
-                    adjectifs.forEach(adjectif => {
-                        adjectifs.forEach(adjectif1 => {
-                            if (adjectif == adjectif1)
-                                return
-                            coordination.forEach(coord => {
-                                chose_coor.forEach(coordchose => {
-                                    templates = getTemplate(verbe, chose, chose_outil, adjectif, adjectif1, coordchose, coord)
-                                    templates.forEach(p => cb(p))
-                                })
-                            })
-                        })
-                    })
-                })
-            })
-        })
-        resolve()
-    })
+if(typeof module != "undefined"){
+    module.exports = {
+        generateNewPhrase : generateNewPhrase
+    }
 }
-
-function obselete_getNbElements(xv = 1, xc = 1, xcc = 1, xa = 1, xco = 1) {
-    v = verbes.length * xv
-    c = choses.length * xc
-    cc = chose_coor.length * xcc
-    a = adjectifs.length * xa
-    co = coordination.length * xco
-
-    return v * c * (cc * c + a * ((cc * c) + (a - 1) * (cc * c * (2 * co + 3) + 1 + co)))
-}
-
-function obselete_browseAllPossibilities(cb) {
-    return new Promise(resolve => {
-        verbes.forEach(verbe => {
-            choses.forEach(chose => {
-
-                chose_coor.forEach(coordchose => {
-
-                    choses.forEach(chose_outil => {
-                        cb(`${verbe} ${chose} ${coordchose} ${chose_outil.l()}`)
-                    })
-                })
-                adjectifs.forEach(adjectif => {
-
-                    chose_coor.forEach(coordchose => {
-
-                        choses.forEach(chose_outil => {
-                            cb(`${verbe} ${chose} ${adjectif} ${coordchose} ${chose_outil.l()}`)
-                        })
-                    })
-
-                    adjectifs.forEach(adjectif1 => {
-                        if (adjectif == adjectif1)
-                            return
-
-                        chose_coor.forEach(coordchose => {
-
-                            choses.forEach(chose_outil => {
-                                cb(`${verbe} ${chose} ${adjectif} ${adjectif1} ${coordchose} ${chose_outil.l()}`)
-                                cb(`${verbe} ${chose} ${adjectif} ${coordchose} ${chose_outil.l()} ${adjectif1} `)
-                                cb(`${verbe} ${chose} ${coordchose} ${chose_outil.l()}  ${adjectif} ${adjectif1} `)
-
-                                coordination.forEach(coord => {
-                                    cb(`${verbe} ${chose} ${adjectif} ${coord} ${adjectif1} ${coordchose} ${chose_outil.l()}`)
-                                })
-                                coordination.forEach(coord => {
-                                    cb(`${verbe} ${chose} ${coordchose} ${chose_outil.l()}  ${adjectif} ${coord} ${adjectif1} `)
-                                })
-                            })
-                        })
-
-                        cb(`${verbe} ${chose} ${adjectif} ${adjectif1}`)
-                        coordination.forEach(coord => {
-                            cb(`${verbe} ${chose} ${adjectif} ${coord} ${adjectif1} `)
-                        })
-                    })
-                })
-            })
-        })
-
-        resolve()
-    })
+if(typeof exports != "undefined"){
+    exports = {
+        generateNewPhrase : generateNewPhrase
+    }
 }

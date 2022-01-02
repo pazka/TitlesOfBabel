@@ -26,12 +26,8 @@ function add_node(phrase, special_css) {
     if (animation)
         clearTimeout(animation)
 
-    await browseAllPossibilities((phrase) => {
-        nb_combination_found++
-    })
-    add_node(`${new Intl.NumberFormat().format(nb_combination_found)} combinations compiled... Have fun :) `)
+    add_node(`~${new Intl.NumberFormat().format(getNbElements())} combinations caculated... Have fun :) `)
 
-    console.log(`obselete : ${obselete_getNbElements()} element present originaly`)
     special_index = 50
 
 
